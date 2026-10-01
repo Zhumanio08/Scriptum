@@ -11,20 +11,29 @@ public class Main{
     public static void main(String[] args) {
         if (args.length == 0) {
             System.out.println("Error 302");
-            return;
+            return; // тут мы проверяем, есть ли вообще какие то аргументы в консоли
         }
-        String Filename = args[0];
+        String Filename = args[0]; // Тут мы получаем название файла в консоли
         try {
             Path path = Paths.get(Filename);
             if (!Files.exists(path)){
                 System.out.println("Файл" + " " + Filename +" не найден");
-                return;
+                return; // тут из переменной Filename мы узнаем существует ли файл при помощи библиотеки Paths и метода .get()
             }
             List<String> lines = Files.readAllLines(path);
             System.out.println("Успешно прочитали файл!");
-            for(String line: lines){
-                System.out.println(line);
+            boolean inside = false;
+            for(String line: lines){ // тут сложный цикл прочтения файл и из каждого lines ( lines = path, который = Filename)
+                if (line.trim().startsWith("```")){
+                    inside = !inside;
+                    continue; // тут мы идеально выводим джава блоки! Идея в том, чтобы использовать .trim(), чтобы убрать пробелы ( потому что могут быть пробелы в строке)
+                                // и поэтому когда доходим до джава блока, мы переключаем наш inside и пропускаем кавычки и выводим чисто код
+                }
+                if (inside) {
+                    System.out.println(line);
+                }
             }
+
         } catch (Exception e) {
             System.out.println("Ошибка чтения файла");;
         }
