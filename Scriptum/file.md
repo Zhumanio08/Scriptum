@@ -2,15 +2,16 @@
 
 Это обычный текст.
 
-```java
-System.out.println("Hello!");
-```
-
 Ещё текст.
 
 ```java
-int x = 5;
-System.out.println(x);
+class run {
+    public static void main(){
+        int a = 2+2;
+        int b = a/2;
+        System.out.println(a);
+    }
+}
 ```
 
 Финальный текст.

@@ -13,6 +13,7 @@ public class Main{
             System.out.println("Error 302");
             return; // тут мы проверяем, есть ли вообще какие то аргументы в консоли
         }
+        StringBuilder builder = new StringBuilder();
         String Filename = args[0]; // Тут мы получаем название файла в консоли
         try {
             Path path = Paths.get(Filename);
@@ -30,12 +31,24 @@ public class Main{
                                 // и поэтому когда доходим до джава блока, мы переключаем наш inside и пропускаем кавычки и выводим чисто код
                 }
                 if (inside) {
-                    System.out.println(line);
+                    builder.append(line).append("\n");
                 }
             }
+            Path Newfile = Paths.get("src","run.java");
+            Files.writeString(Newfile, builder.toString());
+            System.out.println("Файл run.java успешно сохранен");
+            String javaBin = System.getProperty("java.home") + "/bin/java";
+            ProcessBuilder pb = new ProcessBuilder(javaBin, Newfile.toString());
+            pb.inheritIO();
+            Process comp  = pb.start();
+            System.out.println("Файл успешно запущен");
+            comp.waitFor();
+
 
         } catch (Exception e) {
-            System.out.println("Ошибка чтения файла");;
+            System.out.println("Ошибка чтения файла");
+            e.printStackTrace();
         }
+
     }
 }
