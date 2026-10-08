@@ -35,8 +35,6 @@ java Main document.md
 ## Project Structure
 
 scriptum/
-
-
 ├── Main.java
 ├── test.md
 └── README.md
