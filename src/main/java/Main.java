@@ -63,8 +63,10 @@ public class    Main{
                 System.out.println("Java-блоки не найдены");
                 return; // нечего сохранять и запускать
             }
-            Path outDir = Paths.get("src"); // кладем рядом с Main
-            if (!Files.isDirectory(outDir)) outDir = Paths.get(".");
+            // Изолированный запуск: извлекаем код во временную папку,
+            // чтобы не засорять проект пользователя (ни src/, ни текущую папку).
+            Path outDir = Files.createTempDirectory("scriptum-");
+            System.out.println("Временная папка: " + outDir);
             List<String> names = new ArrayList<>(files.keySet());
             List<String> jfs = new ArrayList<>();
             for (Map.Entry<String, StringBuilder> e : files.entrySet()) {
