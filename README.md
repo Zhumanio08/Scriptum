@@ -27,6 +27,46 @@ class Hello {
 - JDK 17 или новее (`java -version`);
 - Maven 3.8+ (`mvn -version`).
 
+### Установка
+
+Установка одной командой (Linux / macOS). Требуется только JDK 17+ — Maven и git
+скрипт проверит и докачает сам:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Zhumanio08/Scriptum/master/install.sh | bash
+```
+
+Скрипт клонирует репозиторий в `~/.local/share/scriptum`, собирает JAR командой
+`mvn clean package` и ставит команду `scriptum` в `~/.local/bin`. После этого
+в любом своём проекте достаточно:
+
+```bash
+cd ~/мой-проект
+scriptum notes.md
+```
+
+Если shell пишет `scriptum: command not found`, добавь в `~/.bashrc`:
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+Windows — скачай `install.bat` со страницы репозитория и запусти его
+(нужны JDK 17+ и git; Maven скрипт скачает сам):
+
+```powershell
+irm https://raw.githubusercontent.com/Zhumanio08/Scriptum/master/install.bat -OutFile install.bat; .\install.bat
+```
+
+Без установщика — вручную на любой ОС (нужны JDK 17+, Maven, git):
+
+```bash
+git clone https://github.com/Zhumanio08/Scriptum.git
+cd Scriptum
+mvn clean package
+java -jar target/scriptum-0.1.0-SNAPSHOT.jar test.md
+```
+
 ### Сборка и запуск
 
 ```bash
@@ -57,7 +97,8 @@ class Hello {
 ```text
 $ java -jar target/scriptum-0.1.0-SNAPSHOT.jar test.md
 Успешно прочитали файл!
-Сохранен src/Hello.java
+Временная папка: /tmp/scriptum-XXXXXXXX
+Сохранен /tmp/scriptum-XXXXXXXX/Hello.java
 Запущен класс Hello
 Hello, Scriptum!
 ```
@@ -72,9 +113,8 @@ Hello, Scriptum!
 
 ### Ограничения текущей версии
 
-- Извлечённые `.java`-файлы сохраняются в каталог `src/`, если он существует рядом
-  с рабочей папкой запуска, иначе — в текущую папку. Запуск из корня проекта пишет
-  файлы в `src/` (рядом с `src/main`), их нужно удалять вручную.
+- Извлечённые `.java`-файлы сохраняются во временную папку (`/tmp/scriptum-*`),
+  поэтому проект пользователя не засоряется — запускать можно из любой папки.
 - Блоки с одинаковым именем класса склеиваются в один файл (содержимое дописывается
   друг за другом), что может дать невалидный Java-код.
 - Запускаются только классы, в тексте которых есть подстрока `main(`; если таких нет,
@@ -93,6 +133,8 @@ scriptum/
 ├── pom.xml                  # Maven-сборка, mainClass = Main
 ├── README.md
 ├── test.md                  # пример для проверки запуска
+├── install.sh               # установщик одной командой (Linux/macOS)
+├── install.bat              # установщик (Windows)
 ├── done.txt                 # заметки по истории релизов
 ├── src/
 │   ├── main/java/Main.java  # вся логика (один класс, без пакетов)
@@ -138,6 +180,46 @@ class Hello {
 - JDK 17 or newer (`java -version`);
 - Maven 3.8+ (`mvn -version`).
 
+### Install
+
+One-line install (Linux / macOS). Only JDK 17+ is required — the script checks
+for Maven and git itself:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Zhumanio08/Scriptum/master/install.sh | bash
+```
+
+The script clones the repo into `~/.local/share/scriptum`, builds the JAR with
+`mvn clean package`, and installs the `scriptum` command into `~/.local/bin`.
+After that, inside any of your projects just run:
+
+```bash
+cd ~/my-project
+scriptum notes.md
+```
+
+If the shell says `scriptum: command not found`, add to `~/.bashrc`:
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+Windows — download `install.bat` from the repo page and run it
+(JDK 17+ and git required; Maven is downloaded automatically):
+
+```powershell
+irm https://raw.githubusercontent.com/Zhumanio08/Scriptum/master/install.bat -OutFile install.bat; .\install.bat
+```
+
+Without the installer — manually on any OS (JDK 17+, Maven, git required):
+
+```bash
+git clone https://github.com/Zhumanio08/Scriptum.git
+cd Scriptum
+mvn clean package
+java -jar target/scriptum-0.1.0-SNAPSHOT.jar test.md
+```
+
 ### Build and run
 
 ```bash
@@ -169,7 +251,8 @@ Command and output:
 ```text
 $ java -jar target/scriptum-0.1.0-SNAPSHOT.jar test.md
 Успешно прочитали файл!
-Сохранен src/Hello.java
+Временная папка: /tmp/scriptum-XXXXXXXX
+Сохранен /tmp/scriptum-XXXXXXXX/Hello.java
 Запущен класс Hello
 Hello, Scriptum!
 ```
@@ -188,9 +271,8 @@ that matches:
 
 ### Current limitations
 
-- Extracted `.java` files go into `src/` when that directory exists next to the working
-  directory, otherwise into the current directory. Running from the project root pollutes
-  `src/` (next to `src/main`); generated files must be deleted manually.
+- Extracted `.java` files go into a temp directory (`/tmp/scriptum-*`),
+  so the user project stays clean — you can run from any folder.
 - Blocks sharing one class name are concatenated into a single file (contents appended
   one after another), which may produce invalid Java.
 - Only classes whose text contains the substring `main(` are launched; if none match,
@@ -208,6 +290,8 @@ scriptum/
 ├── pom.xml                  # Maven build, mainClass = Main
 ├── README.md
 ├── test.md                  # sample file for smoke-testing the run
+├── install.sh               # one-line installer (Linux/macOS)
+├── install.bat              # installer (Windows)
 ├── done.txt                 # release history notes (Russian)
 ├── src/
 │   ├── main/java/Main.java  # all logic (single class, default package)
