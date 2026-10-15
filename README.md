@@ -29,36 +29,113 @@ class Hello {
 
 ### Установка
 
-Установка одной командой (Linux / macOS). Требуется только JDK 17+ — Maven и git
-скрипт проверит и докачает сам:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Zhumanio08/Scriptum/master/install.sh | bash
-```
-
-Скрипт клонирует репозиторий в `~/.local/share/scriptum`, собирает JAR командой
-`mvn clean package` и ставит команду `scriptum` в `~/.local/bin`. После этого
-в любом своём проекте достаточно:
+Установщик собирает проект из исходников, поэтому нужен JDK 17+ и git.
+Maven ставить не обязательно — скрипт скачает его сам, если не найдёт.
+После установки команда `scriptum` работает из любой папки:
 
 ```bash
 cd ~/мой-проект
 scriptum notes.md
 ```
 
-Если shell пишет `scriptum: command not found`, добавь в `~/.bashrc`:
+Извлечённый код выполняется во временной папке, проект пользователя не засоряется.
+
+#### Linux
+
+1. Поставь JDK 17+ и git. Примеры для популярных дистрибутивов:
+
+Debian / Ubuntu:
+
+```bash
+sudo apt update && sudo apt install -y openjdk-17-jdk git curl
+```
+
+Fedora:
+
+```bash
+sudo dnf install -y java-17-openjdk-devel git curl
+```
+
+Arch:
+
+```bash
+sudo pacman -S --noconfirm jdk17-openjdk git curl
+```
+
+2. Запусти установщик одной командой:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Zhumanio08/Scriptum/master/install.sh | bash
+```
+
+Скрипт клонирует репозиторий в `~/.local/share/scriptum`, выполняет
+`mvn clean package` и кладёт команду `scriptum` в `~/.local/bin`.
+
+3. Если shell пишет `scriptum: command not found`, добавь в `~/.bashrc`:
 
 ```bash
 export PATH="$HOME/.local/bin:$PATH"
 ```
 
-Windows — скачай `install.bat` со страницы репозитория и запусти его
-(нужны JDK 17+ и git; Maven скрипт скачает сам):
+#### macOS
+
+1. Поставь JDK 17+ и git (через Homebrew):
+
+```bash
+brew install openjdk@17 git
+```
+
+Если `java -version` всё равно показывает старую версию, привяжи JDK:
+
+```bash
+sudo ln -sfn $(brew --prefix)/opt/openjdk@17/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-17.jdk
+```
+
+2. Запусти установщик (тот же, что для Linux):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Zhumanio08/Scriptum/master/install.sh | bash
+```
+
+3. На macOS по умолчанию shell — zsh, поэтому если команда не найдена,
+добавь путь в `~/.zshrc`:
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+#### Windows
+
+1. Поставь JDK 17+ и git. Через winget (в PowerShell):
+
+```powershell
+winget install EclipseAdoptium.Temurin.17.JDK
+winget install Git.Git
+```
+
+Или вручную: [Adoptium Temurin 17](https://adoptium.net/temurin/releases/) и
+[git для Windows](https://git-scm.com/download/win). Maven ставить не надо —
+установщик скачает portable-версию сам.
+
+2. Скачай и запусти установщик (в PowerShell):
 
 ```powershell
 irm https://raw.githubusercontent.com/Zhumanio08/Scriptum/master/install.bat -OutFile install.bat; .\install.bat
 ```
 
-Без установщика — вручную на любой ОС (нужны JDK 17+, Maven, git):
+Альтернатива без консоли: скачай `install.bat` со страницы репозитория
+и запусти двойным кликом. Скрипт положит репозиторий в
+`%LOCALAPPDATA%\scriptum\repo`, соберёт JAR и скопирует `scriptum.cmd`
+в `%LOCALAPPDATA%\Microsoft\WindowsApps` (эта папка уже в PATH),
+поэтому команда видна из любой папки:
+
+```bat
+scriptum notes.md
+```
+
+#### Без установщика (любая ОС)
+
+Нужны JDK 17+, Maven 3.8+ и git:
 
 ```bash
 git clone https://github.com/Zhumanio08/Scriptum.git
@@ -182,36 +259,113 @@ class Hello {
 
 ### Install
 
-One-line install (Linux / macOS). Only JDK 17+ is required — the script checks
-for Maven and git itself:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Zhumanio08/Scriptum/master/install.sh | bash
-```
-
-The script clones the repo into `~/.local/share/scriptum`, builds the JAR with
-`mvn clean package`, and installs the `scriptum` command into `~/.local/bin`.
-After that, inside any of your projects just run:
+The installer builds the project from source, so you need JDK 17+ and git.
+Maven is optional — the script downloads it automatically if missing.
+After install the `scriptum` command works from any folder:
 
 ```bash
 cd ~/my-project
 scriptum notes.md
 ```
 
-If the shell says `scriptum: command not found`, add to `~/.bashrc`:
+Extracted code runs in a temp directory, so the user project stays clean.
+
+#### Linux
+
+1. Install JDK 17+ and git. Examples for popular distros:
+
+Debian / Ubuntu:
+
+```bash
+sudo apt update && sudo apt install -y openjdk-17-jdk git curl
+```
+
+Fedora:
+
+```bash
+sudo dnf install -y java-17-openjdk-devel git curl
+```
+
+Arch:
+
+```bash
+sudo pacman -S --noconfirm jdk17-openjdk git curl
+```
+
+2. Run the one-line installer:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Zhumanio08/Scriptum/master/install.sh | bash
+```
+
+The script clones the repo into `~/.local/share/scriptum`, runs
+`mvn clean package`, and puts the `scriptum` command into `~/.local/bin`.
+
+3. If the shell says `scriptum: command not found`, add to `~/.bashrc`:
 
 ```bash
 export PATH="$HOME/.local/bin:$PATH"
 ```
 
-Windows — download `install.bat` from the repo page and run it
-(JDK 17+ and git required; Maven is downloaded automatically):
+#### macOS
+
+1. Install JDK 17+ and git via Homebrew:
+
+```bash
+brew install openjdk@17 git
+```
+
+If `java -version` still shows an old version, link the JDK:
+
+```bash
+sudo ln -sfn $(brew --prefix)/opt/openjdk@17/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-17.jdk
+```
+
+2. Run the same installer as on Linux:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Zhumanio08/Scriptum/master/install.sh | bash
+```
+
+3. The default shell on macOS is zsh, so if the command is not found,
+add the path to `~/.zshrc`:
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+#### Windows
+
+1. Install JDK 17+ and git. Via winget (in PowerShell):
+
+```powershell
+winget install EclipseAdoptium.Temurin.17.JDK
+winget install Git.Git
+```
+
+Or manually: [Adoptium Temurin 17](https://adoptium.net/temurin/releases/) and
+[git for Windows](https://git-scm.com/download/win). No need to install Maven —
+the installer fetches a portable copy itself.
+
+2. Download and run the installer (in PowerShell):
 
 ```powershell
 irm https://raw.githubusercontent.com/Zhumanio08/Scriptum/master/install.bat -OutFile install.bat; .\install.bat
 ```
 
-Without the installer — manually on any OS (JDK 17+, Maven, git required):
+Alternative without a console: download `install.bat` from the repo page
+and double-click it. The script puts the repo into
+`%LOCALAPPDATA%\scriptum\repo`, builds the JAR, and copies `scriptum.cmd`
+into `%LOCALAPPDATA%\Microsoft\WindowsApps` (already on PATH),
+so the command is visible from any folder:
+
+```bat
+scriptum notes.md
+```
+
+#### Without the installer (any OS)
+
+JDK 17+, Maven 3.8+ and git are required:
 
 ```bash
 git clone https://github.com/Zhumanio08/Scriptum.git
