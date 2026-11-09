@@ -1,463 +1,315 @@
+<div align="center">
+
+<img src="docs/images/icon.png" width="128" alt="Scriptum icon">
+
 # Scriptum
 
-## Русский
+**Run the Java inside your Markdown.**
 
-### Что это
+Write notes, tutorials or homework in Markdown, keep real Java next to the text,
+and run it all with one click — or one command.
 
-Scriptum — CLI-утилита на Java. Она читает Markdown-файл, находит в нём блоки кода
-` ```java `, сохраняет каждый блок в отдельный `.java`-файл, компилирует их через
-`javac` и запускает те классы, в которых есть метод `main`.
+[![CI](https://github.com/Zhumanio08/Scriptum/actions/workflows/ci.yml/badge.svg)](https://github.com/Zhumanio08/Scriptum/actions/workflows/ci.yml)
+![Java 17+](https://img.shields.io/badge/Java-17%2B-5E5CE6?logo=openjdk&logoColor=white)
+![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-Пример Markdown:
+[Русская версия](README.ru.md)
 
-````markdown
-# Пример
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/app-dark.png">
+  <img src="docs/images/app-light.png" alt="Scriptum desktop app: Markdown editor with Java highlighting, list of code blocks and program output">
+</picture>
 
-```java
-class Hello {
-    public static void main(String[] args) {
-        System.out.println("Hello, Scriptum!");
-    }
-}
-```
-````
+</div>
 
-### Требования
+## Why
 
-- JDK 17 или новее (`java -version`);
-- Maven 3.8+ (`mvn -version`).
+Markdown is where we explain code — READMEs, lecture notes, blog drafts, exercises.
+But the code in those files is dead text: it silently goes stale, and to try it you
+copy-paste it into an IDE.
 
-### Установка
+Scriptum makes the document itself runnable. It finds every ` ```java ` block,
+compiles them **together** (so blocks can use each other), runs every class with a
+`main` method and shows compiler errors **at the right line of the Markdown file**.
 
-Установщик собирает проект из исходников, поэтому нужен JDK 17+ и git.
-Maven ставить не обязательно — скрипт скачает его сам, если не найдёт.
-После установки команда `scriptum` работает из любой папки:
+## Features
 
-```bash
-cd ~/мой-проект
-scriptum notes.md
-```
+- 🖥 **Desktop app** with a macOS-style design on every OS: rounded window with a soft
+  shadow and traffic-light buttons, light / dark / system appearance.
+- ✍️ **Markdown editor** with real Java syntax highlighting *inside* code fences,
+  line numbers and a ▶ button next to every runnable class.
+- 🧩 **Code-block sidebar** — every generated `.java` file at a glance; click to jump,
+  ▶ to run just that one.
+- 📟 **Live console** that streams output, highlights `stderr`, lets you type into the
+  program's **stdin**, and turns stack-trace lines into links back to the Markdown.
+- 🎯 **Errors in Markdown coordinates** — the Problems list and the editor point to the
+  exact line and column of your `.md` file.
+- ⚡ **Snippets** — a block with plain statements is wrapped into `main` for you:
+  ` ```java ` + `System.out.println("hi");` just works.
+- 🧱 **Real Java**: multiple classes, records, enums, packages, Java 25 compact source
+  files (`void main()`), blocks split across the text and merged back together.
+- ⌨️ **CLI** for terminals, scripts and CI: colored output, `--list`, `--timeout`,
+  `--out`, program arguments, meaningful exit codes.
+- 🧼 Runs in a temporary directory — nothing is written next to your files.
 
-Извлечённый код выполняется во временной папке, проект пользователя не засоряется.
+<table>
+  <tr>
+    <td><img src="docs/images/problems-dark.png" alt="Compiler error shown at the Markdown line"></td>
+    <td><img src="docs/images/welcome-light.png" alt="Welcome screen"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Compiler errors point to the Markdown line</sub></td>
+    <td align="center"><sub>Welcome screen</sub></td>
+  </tr>
+</table>
 
-#### Linux
+## Install
 
-1. Поставь JDK 17+ и git. Примеры для популярных дистрибутивов:
+You need a **JDK 17 or newer** (a JDK, not just a JRE — Scriptum compiles code) and **git**.
+Maven is optional: the installer downloads it if needed.
 
-Debian / Ubuntu:
-
-```bash
-sudo apt update && sudo apt install -y openjdk-17-jdk git curl
-```
-
-Fedora:
-
-```bash
-sudo dnf install -y java-17-openjdk-devel git curl
-```
-
-Arch:
-
-```bash
-sudo pacman -S --noconfirm jdk17-openjdk git curl
-```
-
-2. Запусти установщик одной командой:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Zhumanio08/Scriptum/master/install.sh | bash
-```
-
-Скрипт клонирует репозиторий в `~/.local/share/scriptum`, выполняет
-`mvn clean package` и кладёт команду `scriptum` в `~/.local/bin`.
-
-3. Если shell пишет `scriptum: command not found`, добавь в `~/.bashrc`:
-
-```bash
-export PATH="$HOME/.local/bin:$PATH"
-```
-
-#### macOS
-
-1. Поставь JDK 17+ и git (через Homebrew):
-
-```bash
-brew install openjdk@17 git
-```
-
-Если `java -version` всё равно показывает старую версию, привяжи JDK:
-
-```bash
-sudo ln -sfn $(brew --prefix)/opt/openjdk@17/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-17.jdk
-```
-
-2. Запусти установщик (тот же, что для Linux):
+**Linux / macOS**
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Zhumanio08/Scriptum/master/install.sh | bash
 ```
 
-3. На macOS по умолчанию shell — zsh, поэтому если команда не найдена,
-добавь путь в `~/.zshrc`:
-
-```bash
-export PATH="$HOME/.local/bin:$PATH"
-```
-
-#### Windows
-
-1. Поставь JDK 17+ и git. Через winget (в PowerShell):
-
-```powershell
-winget install EclipseAdoptium.Temurin.17.JDK
-winget install Git.Git
-```
-
-Или вручную: [Adoptium Temurin 17](https://adoptium.net/temurin/releases/) и
-[git для Windows](https://git-scm.com/download/win). Maven ставить не надо —
-установщик скачает portable-версию сам.
-
-2. Скачай и запусти установщик (в PowerShell):
+**Windows** (PowerShell)
 
 ```powershell
 irm https://raw.githubusercontent.com/Zhumanio08/Scriptum/master/install.bat -OutFile install.bat; .\install.bat
 ```
 
-Альтернатива без консоли: скачай `install.bat` со страницы репозитория
-и запусти двойным кликом. Скрипт положит репозиторий в
-`%LOCALAPPDATA%\scriptum\repo`, соберёт JAR и скопирует `scriptum.cmd`
-в `%LOCALAPPDATA%\Microsoft\WindowsApps` (эта папка уже в PATH),
-поэтому команда видна из любой папки:
+The installer builds Scriptum from source and adds the `scriptum` command
+(plus an app-menu / Start-menu launcher for the desktop app). Run it again to update.
 
-```bat
-scriptum notes.md
-```
+<details>
+<summary>Installing a JDK</summary>
 
-#### Без установщика (любая ОС)
+| OS              | Command                                                  |
+|-----------------|----------------------------------------------------------|
+| Debian / Ubuntu | `sudo apt install -y openjdk-17-jdk git`                 |
+| Fedora          | `sudo dnf install -y java-17-openjdk-devel git`          |
+| Arch            | `sudo pacman -S --noconfirm jdk17-openjdk git`           |
+| macOS           | `brew install openjdk@17 git`                            |
+| Windows         | `winget install EclipseAdoptium.Temurin.17.JDK Git.Git`  |
 
-Нужны JDK 17+, Maven 3.8+ и git:
+If the shell can't find `scriptum` afterwards, add `~/.local/bin` to your `PATH`
+(the installer prints the exact line).
+</details>
+
+<details>
+<summary>Without the installer</summary>
 
 ```bash
 git clone https://github.com/Zhumanio08/Scriptum.git
 cd Scriptum
-mvn clean package
-java -jar target/scriptum-0.1.0-SNAPSHOT.jar test.md
+mvn package                         # builds target/scriptum.jar (one runnable JAR)
+java -jar target/scriptum.jar gui   # desktop app
+java -jar target/scriptum.jar examples/tour.md
 ```
 
-### Сборка и запуск
+Double-clicking `scriptum.jar` opens the desktop app as well.
+</details>
+
+## Using the desktop app
 
 ```bash
-mvn clean package
-java -jar target/scriptum-0.1.0-SNAPSHOT.jar test.md
+scriptum gui              # or launch "Scriptum" from the app menu
+scriptum gui notes.md     # open a file directly
 ```
 
-Аргумент — путь к Markdown-файлу. Без аргументов программа печатает `Error 302` и выходит.
+Open a Markdown file (or drop it onto the window), press **Run**, read the output.
+New to it? Click **Take the Tour** on the welcome screen.
 
-### Пример (проверен реальным запуском)
+| Action                  | macOS | Linux / Windows       |
+|-------------------------|-------|-----------------------|
+| Run all blocks          | ⌘R    | Ctrl+R or F5          |
+| Stop                    | ⌘.    | Ctrl+.                |
+| New / Open / Save       | ⌘N / ⌘O / ⌘S | Ctrl+N / Ctrl+O / Ctrl+S |
+| Save As                 | ⇧⌘S   | Ctrl+Shift+S          |
+| Export generated `.java` files | ⇧⌘E | Ctrl+Shift+E   |
+| Clear console           | ⇧⌘K   | Ctrl+Shift+K          |
+| Toggle sidebar          | ⌘0    | Ctrl+0                |
 
-Входной `test.md`:
+Program arguments go into the **Arguments** field in the toolbar (quotes work as in a
+shell). While a program runs, type into the input line under the console to feed its
+stdin; **EOF** closes the input.
+
+> On tiling window managers you may prefer the system title bar:
+> start with `SCRIPTUM_NATIVE_FRAME=1 scriptum gui`.
+
+## Using the command line
+
+```text
+$ scriptum examples/tour.md
+ Scriptum  tour.md  7 blocks → Block1.java, Book.java, Library.java, Fibonacci.java, Server.java
+✓ Compiled 5 files in 763 ms
+
+▶ Block1  line 10
+Snippet says hi on MONDAY
+✓ Block1 finished in 79 ms
+
+▶ Library  line 32
+Classic: 1984 (1949)
+Classic: The Hobbit (1937)
+✓ Library finished in 45 ms
+...
+```
+
+```text
+$ scriptum examples/broken.md
+error broken.md:10:35  (Broken.java)
+  ';' expected
+ 10 │         System.out.println(answer)
+    │                                   ^
+✗ Build failed — 1 error
+```
+
+| Option | Meaning |
+|---|---|
+| `-l, --list` | show the blocks and entry points, don't run anything |
+| `-r, --run <Class>` | run only this class (repeatable) |
+| `-o, --out <dir>` | also export the generated `.java` files to `<dir>` |
+| `-k, --keep` | keep the temporary build directory |
+| `-t, --timeout <sec>` | stop a program that runs longer than this |
+| `-q, --quiet` | print only the programs' own output |
+| `--no-color` | disable colors (`NO_COLOR` is honored too) |
+| `-- <args...>` | arguments passed to every program |
+| `-` (as the file) | read Markdown from stdin |
+
+Scriptum's own status lines go to **stderr**, the programs' output to **stdout** —
+so `scriptum notes.md > out.txt` captures exactly what your code printed.
+
+Exit codes: `0` success · `1` a program failed · `2` usage error · `3` compilation
+failed · `124` timeout.
+
+## Writing documents
+
+Any fenced block tagged `java` becomes code. Everything else is ignored.
 
 ````markdown
-# Test
+A snippet — statements are wrapped into `main` automatically:
 
 ```java
-class Hello {
+var langs = java.util.List.of("Java", "Markdown");
+System.out.println(String.join(" + ", langs));
+```
+
+Classes in different blocks are compiled together:
+
+```java
+record Point(int x, int y) {}
+```
+
+```java
+public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello, Scriptum!");
+        System.out.println(new Point(1, 2));
     }
 }
 ```
 ````
 
-Команда и вывод:
+| You write | Scriptum does |
+|---|---|
+| ` ```java ` with classes | saves them as `<PublicClass or FirstClass>.java` and runs every class that declares `main` |
+| ` ```java ` with plain statements | wraps them into `public class BlockN { main(...) }`, keeping `import`s on top |
+| ` ```java ` with top-level methods (`void main()`) | treats it as a Java 25 compact source file |
+| ` ```java class="Story" ` (or `name=`) | names the file; blocks with the **same name are merged**, so one class can be explained piece by piece |
+| ` ```java norun ` | compiles the block but doesn't launch its `main` |
+| ` ```java skip ` | ignores the block (pseudo-code, intentionally broken examples) |
+| `package com.acme;` | places the file in `com/acme/` and runs `com.acme.App` |
 
-```text
-$ java -jar target/scriptum-0.1.0-SNAPSHOT.jar test.md
-Успешно прочитали файл!
-Временная папка: /tmp/scriptum-XXXXXXXX
-Сохранен /tmp/scriptum-XXXXXXXX/Hello.java
-Запущен класс Hello
-Hello, Scriptum!
+Fences follow CommonMark: ` ``` ` or `~~~`, any indentation, and a longer fence
+(` ```` `) can contain ` ``` ` examples without them being executed.
+
+See [`examples/`](examples) — `tour.md` shows every feature.
+
+## How it works
+
+```mermaid
+flowchart LR
+    MD[Markdown file] --> P[MarkdownParser<br/>CommonMark fences + attributes]
+    P --> S[Program assembler<br/>JavaSourceScanner: types, main, package]
+    S --> B[JavaBuilder<br/>javax.tools compiler]
+    B -- diagnostics --> M[Line mapping<br/>.java line → .md line]
+    B --> R[ProgramRunner<br/>separate JVM per entry point]
+    R --> CLI[CLI]
+    R --> GUI[Desktop app]
+    M --> CLI
+    M --> GUI
 ```
 
-### Как именуются классы
-
-Имя `.java`-файла для каждого блока выбирается по первому сработавшему правилу:
-
-1. Атрибут забора: ` ```java class="Имя" ` (кавычки `"` / `'` или без кавычек);
-2. Первое вхождение `class Имя` внутри кода блока;
-3. Иначе — `Block1`, `Block2`, … по порядку блоков без имени.
-
-### Ограничения текущей версии
-
-- Извлечённые `.java`-файлы сохраняются во временную папку (`/tmp/scriptum-*`),
-  поэтому проект пользователя не засоряется — запускать можно из любой папки.
-- Блоки с одинаковым именем класса склеиваются в один файл (содержимое дописывается
-  друг за другом), что может дать невалидный Java-код.
-- Запускаются только классы, в тексте которых есть подстрока `main(`; если таких нет,
-  пробуются все извлечённые классы подряд.
-- Закрытием блока считается любая строка, начинающаяся с ` ``` ` после trim;
-  вложенные заборы не поддерживаются.
-- Пути к `javac`/`java` берутся как `<java.home>/bin/javac` — нужен полный JDK,
-  на чистом JRE компиляция не запустится.
-- Обработка ошибок минимальная: битый код даёт `Ошибка компиляции`, любое исключение —
-  `Ошибка чтения файла` + stack trace.
-
-### Структура проекта
-
-```text
-scriptum/
-├── pom.xml                  # Maven-сборка, mainClass = Main
-├── README.md
-├── test.md                  # пример для проверки запуска
-├── install.sh               # установщик одной командой (Linux/macOS)
-├── install.bat              # установщик (Windows)
-├── done.txt                 # заметки по истории релизов
-├── src/
-│   ├── main/java/Main.java  # вся логика (один класс, без пакетов)
-│   └── test/java/           # пустая, под будущие тесты
-└── target/
-    └── scriptum-0.1.0-SNAPSHOT.jar
-```
-
-Старая IDEA-раскладка (`Scriptum/src/`, `out/`, `*.iml`) оставлена нетронутой
-и в сборке не участвует.
-
-### Статус
-
-Учебный проект, версия `0.1.0-SNAPSHOT`. API и формат вывода нестабильны
-и могут меняться без предупреждения.
-
----
-
-## English
-
-### What it is
-
-Scriptum is a small Java CLI tool. It reads a Markdown file, extracts ` ```java `
-code fences, saves each block as a `.java` file, compiles them with `javac`,
-and runs the classes that contain a `main` method.
-
-Example Markdown:
-
-````markdown
-# Example
-
-```java
-class Hello {
-    public static void main(String[] args) {
-        System.out.println("Hello, Scriptum!");
-    }
-}
-```
-````
-
-### Requirements
-
-- JDK 17 or newer (`java -version`);
-- Maven 3.8+ (`mvn -version`).
-
-### Install
-
-The installer builds the project from source, so you need JDK 17+ and git.
-Maven is optional — the script downloads it automatically if missing.
-After install the `scriptum` command works from any folder:
-
-```bash
-cd ~/my-project
-scriptum notes.md
-```
-
-Extracted code runs in a temp directory, so the user project stays clean.
-
-#### Linux
-
-1. Install JDK 17+ and git. Examples for popular distros:
-
-Debian / Ubuntu:
-
-```bash
-sudo apt update && sudo apt install -y openjdk-17-jdk git curl
-```
-
-Fedora:
-
-```bash
-sudo dnf install -y java-17-openjdk-devel git curl
-```
-
-Arch:
-
-```bash
-sudo pacman -S --noconfirm jdk17-openjdk git curl
-```
-
-2. Run the one-line installer:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Zhumanio08/Scriptum/master/install.sh | bash
-```
-
-The script clones the repo into `~/.local/share/scriptum`, runs
-`mvn clean package`, and puts the `scriptum` command into `~/.local/bin`.
-
-3. If the shell says `scriptum: command not found`, add to `~/.bashrc`:
-
-```bash
-export PATH="$HOME/.local/bin:$PATH"
-```
-
-#### macOS
-
-1. Install JDK 17+ and git via Homebrew:
-
-```bash
-brew install openjdk@17 git
-```
-
-If `java -version` still shows an old version, link the JDK:
-
-```bash
-sudo ln -sfn $(brew --prefix)/opt/openjdk@17/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-17.jdk
-```
-
-2. Run the same installer as on Linux:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Zhumanio08/Scriptum/master/install.sh | bash
-```
-
-3. The default shell on macOS is zsh, so if the command is not found,
-add the path to `~/.zshrc`:
-
-```bash
-export PATH="$HOME/.local/bin:$PATH"
-```
-
-#### Windows
-
-1. Install JDK 17+ and git. Via winget (in PowerShell):
-
-```powershell
-winget install EclipseAdoptium.Temurin.17.JDK
-winget install Git.Git
-```
-
-Or manually: [Adoptium Temurin 17](https://adoptium.net/temurin/releases/) and
-[git for Windows](https://git-scm.com/download/win). No need to install Maven —
-the installer fetches a portable copy itself.
-
-2. Download and run the installer (in PowerShell):
-
-```powershell
-irm https://raw.githubusercontent.com/Zhumanio08/Scriptum/master/install.bat -OutFile install.bat; .\install.bat
-```
-
-Alternative without a console: download `install.bat` from the repo page
-and double-click it. The script puts the repo into
-`%LOCALAPPDATA%\scriptum\repo`, builds the JAR, and copies `scriptum.cmd`
-into `%LOCALAPPDATA%\Microsoft\WindowsApps` (already on PATH),
-so the command is visible from any folder:
-
-```bat
-scriptum notes.md
-```
-
-#### Without the installer (any OS)
-
-JDK 17+, Maven 3.8+ and git are required:
-
-```bash
-git clone https://github.com/Zhumanio08/Scriptum.git
-cd Scriptum
-mvn clean package
-java -jar target/scriptum-0.1.0-SNAPSHOT.jar test.md
-```
-
-### Build and run
-
-```bash
-mvn clean package
-java -jar target/scriptum-0.1.0-SNAPSHOT.jar test.md
-```
-
-The argument is the path to a Markdown file. With no arguments the program prints
-`Error 302` and exits.
-
-### Example (verified by an actual run)
-
-Input `test.md`:
-
-````markdown
-# Test
-
-```java
-class Hello {
-    public static void main(String[] args) {
-        System.out.println("Hello, Scriptum!");
-    }
-}
-```
-````
-
-Command and output:
-
-```text
-$ java -jar target/scriptum-0.1.0-SNAPSHOT.jar test.md
-Успешно прочитали файл!
-Временная папка: /tmp/scriptum-XXXXXXXX
-Сохранен /tmp/scriptum-XXXXXXXX/Hello.java
-Запущен класс Hello
-Hello, Scriptum!
-```
-
-(The status lines are printed in Russian by the program; only the last line
-is produced by the extracted `Hello` class.)
-
-### How classes are named
-
-Each block becomes one `.java` file. The file name comes from the first rule
-that matches:
-
-1. Fence attribute: ` ```java class="Name" ` (double quotes, single quotes, or no quotes);
-2. The first `class Name` occurrence inside the block code;
-3. Otherwise — `Block1`, `Block2`, … in order of unnamed blocks.
-
-### Current limitations
-
-- Extracted `.java` files go into a temp directory (`/tmp/scriptum-*`),
-  so the user project stays clean — you can run from any folder.
-- Blocks sharing one class name are concatenated into a single file (contents appended
-  one after another), which may produce invalid Java.
-- Only classes whose text contains the substring `main(` are launched; if none match,
-  every extracted class is tried in order.
-- Any line starting with ` ``` ` (after trim) closes a block; nested fences are not supported.
-- `javac`/`java` resolve as `<java.home>/bin/javac`, so a full JDK is required —
-  a plain JRE cannot compile.
-- Error handling is minimal: broken code yields `Ошибка компиляции`, any exception
-  yields `Ошибка чтения файла` plus a stack trace.
+1. **Parse.** `MarkdownParser` extracts ` ```java ` fences with their attributes,
+   following the CommonMark rules for fence length, `~~~` and indentation.
+2. **Assemble.** Blocks are grouped into source files. `JavaSourceScanner` — a small
+   tolerant scanner that masks comments and string literals and tracks brace depth —
+   finds top-level types, `main` methods, packages and snippets. Every generated line
+   remembers the Markdown line it came from.
+3. **Compile.** `JavaBuilder` uses the in-process compiler from `javax.tools`
+   (falling back to an external `javac`) and translates each diagnostic back into
+   Markdown coordinates.
+4. **Run.** Each entry point runs in its own JVM. The CLI inherits the terminal;
+   the desktop app streams stdout/stderr on background threads and batches them into
+   the console every 40 ms, so even very chatty programs keep the UI responsive.
+
+### Desktop app internals
+
+- **Swing + [FlatLaf](https://www.formdev.com/flatlaf/)** (macOS light/dark themes),
+  bundled Inter and JetBrains Mono fonts so the app looks the same everywhere.
+- **Custom window** (`MacWindow`): on Linux/Windows an undecorated, per-pixel
+  translucent frame with a cached 9-slice Gaussian shadow, rounded body, hand-drawn
+  traffic lights, edge resizing, drag-to-move and double-click-to-zoom. On macOS the
+  native window with a transparent full-size title bar is used instead.
+- **Editor** on [RSyntaxTextArea](https://github.com/bobbylight/RSyntaxTextArea) with a
+  custom `TokenMaker` that delegates prose to the Markdown lexer and fenced code to the
+  Java lexer, carrying both lexers' multi-line state across lines.
+- Hand-made SVG icon set and app icon; Xcode-style activity indicator in the toolbar.
 
 ### Project layout
 
 ```text
-scriptum/
-├── pom.xml                  # Maven build, mainClass = Main
-├── README.md
-├── test.md                  # sample file for smoke-testing the run
-├── install.sh               # one-line installer (Linux/macOS)
-├── install.bat              # installer (Windows)
-├── done.txt                 # release history notes (Russian)
-├── src/
-│   ├── main/java/Main.java  # all logic (single class, default package)
-│   └── test/java/           # empty, reserved for future tests
-└── target/
-    └── scriptum-0.1.0-SNAPSHOT.jar
+src/main/java/live/justzhuman/scriptum/
+├── Launcher.java              entry point: CLI or GUI
+├── core/                      no UI code — usable as a library
+│   ├── MarkdownParser.java    CommonMark fences → CodeBlock
+│   ├── JavaSourceScanner.java types, main, package, snippets
+│   ├── Program.java           blocks → SourceUnit files + entry points
+│   ├── JavaBuilder.java       compile + map diagnostics to Markdown lines
+│   ├── ProgramRunner.java     launch / kill programs, argument splitting
+│   └── Workspace.java, Toolchain.java, …
+├── cli/                       argument parsing, colored terminal output
+└── gui/                       window, editor, sidebar, console, theme
+examples/                      sample documents (bundled into the app)
+packaging/                     app icon, jpackage script
 ```
 
-The legacy IDEA layout (`Scriptum/src/`, `out/`, `*.iml`) is left untouched
-and is not part of the build.
+## Development
 
-### Status
+```bash
+mvn package           # compile, run the tests, build target/scriptum.jar
+mvn test              # tests only: parser, scanner, line mapping, end-to-end compile & run
+```
 
-Learning project, version `0.1.0-SNAPSHOT`. Output format and behavior are
-unstable and may change without notice.
+Regenerate the screenshots in this README (renders the window off-screen):
+
+```bash
+mvn package && java -cp target/scriptum.jar:target/test-classes \
+    live.justzhuman.scriptum.gui.Screenshots docs/images
+```
+
+Build a self-contained native app (bundles a Java runtime, uses `jpackage`):
+
+```bash
+./packaging/package.sh          # app image in dist/
+./packaging/package.sh dmg      # or deb, rpm, msi, exe, pkg
+```
+
+CI builds and tests on Linux, macOS and Windows with Java 17 and 21; pushing a `v*`
+tag publishes `scriptum.jar` as a GitHub release.
+
+## License
+
+[MIT](LICENSE)

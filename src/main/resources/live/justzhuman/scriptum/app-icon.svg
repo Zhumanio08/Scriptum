@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0" stop-color="#9A98FF"/>
+      <stop offset="0.55" stop-color="#6460F0"/>
+      <stop offset="1" stop-color="#4338CA"/>
+    </linearGradient>
+    <linearGradient id="paper" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#ECEBFA"/>
+    </linearGradient>
+    <linearGradient id="code" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2E2D3F"/>
+      <stop offset="1" stop-color="#1C1B29"/>
+    </linearGradient>
+    <linearGradient id="run" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4ADE80"/>
+      <stop offset="1" stop-color="#16A34A"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.22"/>
+      <stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect x="100" y="100" width="824" height="824" rx="186" fill="url(#bg)"/>
+  <rect x="100" y="100" width="824" height="824" rx="186" fill="url(#shine)"/>
+  <rect x="101.5" y="101.5" width="821" height="821" rx="184.5" fill="none" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="3"/>
+  <!-- page -->
+  <path d="M318 214h270l136 136v438c0 24-20 44-44 44H318c-24 0-44-20-44-44V258c0-24 20-44 44-44z" fill="#1E1B4B" opacity="0.18" transform="translate(0 14)"/>
+  <path d="M318 214h270l136 136v438c0 24-20 44-44 44H318c-24 0-44-20-44-44V258c0-24 20-44 44-44z" fill="url(#paper)"/>
+  <path d="M588 214v92c0 24 20 44 44 44h92z" fill="#C7C5F2"/>
+  <!-- markdown text -->
+  <rect x="322" y="282" width="176" height="36" rx="18" fill="#5B54E8"/>
+  <rect x="322" y="350" width="222" height="20" rx="10" fill="#CBCAE0"/>
+  <rect x="322" y="390" width="320" height="20" rx="10" fill="#CBCAE0"/>
+  <!-- code card -->
+  <rect x="312" y="446" width="374" height="246" rx="34" fill="url(#code)"/>
+  <rect x="350" y="490" width="78" height="20" rx="10" fill="#FF79C6"/>
+  <rect x="442" y="490" width="120" height="20" rx="10" fill="#8BE9FD"/>
+  <rect x="384" y="534" width="96" height="20" rx="10" fill="#BD93F9"/>
+  <rect x="494" y="534" width="140" height="20" rx="10" fill="#F1FA8C"/>
+  <rect x="384" y="578" width="164" height="20" rx="10" fill="#50FA7B"/>
+  <rect x="350" y="622" width="40" height="20" rx="10" fill="#6E6C8A"/>
+  <!-- run badge -->
+  <circle cx="704" cy="724" r="128" fill="#14532D" opacity="0.25" transform="translate(0 10)"/>
+  <circle cx="704" cy="724" r="128" fill="url(#run)"/>
+  <circle cx="704" cy="724" r="126" fill="none" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="4"/>
+  <path d="M672 664v120c0 9 10 15 18 10l96-60c7-5 7-15 0-20l-96-60c-8-5-18 1-18 10z" fill="#FFFFFF"/>
+</svg>

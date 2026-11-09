@@ -7,9 +7,9 @@ release.properties
 dependency-reduced-pom.xml
 
 ### IntelliJ IDEA ###
+.idea/
+*.iml
 out/
-!**/src/main/**/out/
-!**/src/test/**/out/
 .kotlin
 
 ### Eclipse ###
@@ -34,5 +34,10 @@ bin/
 ### VS Code ###
 .vscode/
 
-### Mac OS ###
+### OS ###
 .DS_Store
+Thumbs.db
+
+### Scriptum ###
+scriptum-out/
+dist/
